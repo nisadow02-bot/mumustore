@@ -186,7 +186,7 @@
                         <h2 class="text-xl font-bold text-purple-800 flex items-center">
                             <i class="fa-solid fa-sliders text-purple-500 mr-2"></i> ระบบจัดการหลังบ้าน MUMUSTORE
                         </h2>
-                        <p class="text-xs text-gray-500">จัดการสต๊อกสินค้า และรูปภาพกฎระเบียบร้านค้า</p>
+                        <p class="text-xs text-gray-500">จัดการสต๊อกสินค้า และลิงก์รูปภาพกฎระเบียบร้านค้า</p>
                     </div>
                     <button onclick="adminLogout()" class="bg-red-100 hover:bg-red-200 text-red-600 text-xs font-bold px-3 py-2 rounded-xl transition-all">
                         <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i> ออกจากแอดมิน
@@ -213,12 +213,8 @@
                                 <input type="number" id="pPrice" required min="0" placeholder="เช่น 35" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">รูปภาพสินค้า (URL หรือ เลือกไฟล์จากเครื่อง)</label>
-                                <input type="file" id="pImgFile" accept="image/*" onchange="previewFile(this, 'pImgPreview')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200 border border-gray-200 rounded-xl p-1 bg-white mb-1">
-                                <input type="text" id="pImgUrl" placeholder="หรือวางลิงก์รูปภาพ https://..." class="w-full px-3 py-1.5 rounded-xl border border-gray-200 text-xs">
-                                <div id="pImgPreviewContainer" class="mt-2 hidden">
-                                    <img id="pImgPreview" src="" class="h-28 rounded-xl border border-purple-200 object-cover">
-                                </div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">ลิงก์รูปภาพสินค้า (Image URL)</label>
+                                <input type="text" id="pImgUrl" placeholder="วางลิงก์รูปภาพ https://..." class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">รายละเอียดสินค้า</label>
@@ -259,13 +255,10 @@
 
                     <!-- Rule & Image Setting -->
                     <div class="bg-pastelPink/10 p-5 rounded-2xl border border-pastelPink/30 space-y-3">
-                        <h3 class="font-bold text-sm text-pink-700"><i class="fa-solid fa-image mr-1"></i> ตั้งค่าป้ายรูปภาพและข้อความกฎร้าน</h3>
+                        <h3 class="font-bold text-sm text-pink-700"><i class="fa-solid fa-image mr-1"></i> ตั้งค่าลิงก์รูปป้ายและข้อความกฎร้าน</h3>
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">เลือกรูปป้ายกฎระเบียบร้าน (จากมือถือ/คอม)</label>
-                            <input type="file" id="rulesImgFile" accept="image/*" onchange="previewFile(this, 'rulesImgPreview')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-pink-100 file:text-pink-700 hover:file:bg-pink-200 border border-gray-200 rounded-lg p-1 bg-white">
-                            <div id="rulesImgPreviewContainer" class="mt-2 hidden">
-                                <img id="rulesImgPreview" src="" class="max-h-36 rounded-xl border border-pink-200 object-contain">
-                            </div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">ลิงก์รูปป้ายกฎระเบียบ (Image URL)</label>
+                            <input type="text" id="rulesImgUrlInput" placeholder="วางลิงก์รูปป้ายกฎร้าน https://..." class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple-300">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">ข้อความกฎระเบียบ</label>
@@ -359,28 +352,6 @@
             rules: "1. สินค้าประกัน 24 ชม. หลังจากรับรหัส\n2. ห้ามเปลี่ยนรหัสผ่านของบัญชีหาร/แชร์\n3. หากพบปัญหากรุณาติดต่อแอดมินทันที",
             rulesImgUrl: ""
         };
-
-        function fileToDataURL(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = e => resolve(e.target.result);
-                reader.onerror = err => reject(err);
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function previewFile(input, previewImgId) {
-            const previewImg = document.getElementById(previewImgId);
-            const container = previewImg.parentElement;
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    container.classList.remove('hidden');
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
 
         window.onload = function() {
             renderProducts();
@@ -505,7 +476,6 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
-            // ดึงข้อมูลสต๊อกล่าสุดจาก Google Sheet
             const callbackName = 'jsonpCallback_' + Math.round(100000 * Math.random());
             window[callbackName] = function(response) {
                 delete window[callbackName];
@@ -521,7 +491,6 @@
                         return;
                     }
 
-                    // ยืนยันการสั่งซื้อ
                     Swal.fire({
                         title: 'ยืนยันสั่งซื้อสินค้า?',
                         text: `คุณกำลังจะสั่งซื้อ "${product.name}" ราคา ${product.price} ฿`,
@@ -551,7 +520,7 @@
         }
 
         function executePurchase(product) {
-            const deliveredCode = product.codes.shift(); // ตัดสต๊อกอัตโนมัติ
+            const deliveredCode = product.codes.shift();
             const newOrder = {
                 orderId: 'MUMU-' + Math.floor(100000 + Math.random() * 900000),
                 username: currentUser.username,
@@ -565,7 +534,6 @@
             renderProducts();
             renderOrders();
 
-            // ส่งคำสั่งตัดสต๊อกลง Google Sheet
             autoSaveAfterPurchase();
 
             Swal.fire({
@@ -646,23 +614,18 @@
         function resetProductForm() {
             document.getElementById('selectExistingProduct').value = "";
             document.getElementById('productForm').reset();
-            document.getElementById('pImgPreviewContainer').classList.add('hidden');
         }
 
-        async function handleAddProduct(e) {
+        function handleAddProduct(e) {
             e.preventDefault();
             const selectedId = document.getElementById('selectExistingProduct').value;
             const name = document.getElementById('pName').value.trim();
             const price = parseFloat(document.getElementById('pPrice').value);
             const desc = document.getElementById('pDesc').value.trim();
             const rawCodes = document.getElementById('pCodes').value.trim();
-            const fileInput = document.getElementById('pImgFile');
-            const urlInput = document.getElementById('pImgUrl').value.trim();
+            let imgUrl = document.getElementById('pImgUrl').value.trim();
 
-            let imgUrl = urlInput;
-            if (fileInput.files && fileInput.files[0]) {
-                imgUrl = await fileToDataURL(fileInput.files[0]);
-            } else if (!imgUrl && selectedId) {
+            if (!imgUrl && selectedId) {
                 const existing = products.find(p => p.id === selectedId);
                 if (existing) imgUrl = existing.img;
             }
@@ -694,7 +657,7 @@
             products.forEach(p => {
                 pTbody.innerHTML += `
                     <tr>
-                        <td class="p-2.5"><img src="${p.img}" class="w-8 h-8 rounded-lg object-cover"></td>
+                        <td class="p-2.5"><img src="${p.img}" class="w-8 h-8 rounded-lg object-cover" onerror="this.src='https://placehold.co/100x100'"></td>
                         <td class="p-2.5 font-bold text-gray-800">${p.name}</td>
                         <td class="p-2.5 text-pink-500 font-bold">${p.price} ฿</td>
                         <td class="p-2.5"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold text-[11px]">${p.codes ? p.codes.length : 0} ชิ้น</span></td>
@@ -718,12 +681,9 @@
             renderAdminView();
         }
 
-        async function saveShopSettings() {
+        function saveShopSettings() {
             shopSettings.rules = document.getElementById('setRulesText').value;
-            const rulesFile = document.getElementById('rulesImgFile');
-            if (rulesFile.files && rulesFile.files[0]) {
-                shopSettings.rulesImgUrl = await fileToDataURL(rulesFile.files[0]);
-            }
+            shopSettings.rulesImgUrl = document.getElementById('rulesImgUrlInput').value.trim();
             updateShopSettingsUI();
             Swal.fire('บันทึกสำเร็จ', 'อัปเดตการตั้งค่ากฎร้านเรียบร้อย', 'success');
         }
@@ -731,6 +691,7 @@
         function updateShopSettingsUI() {
             document.getElementById('shopRulesContent').innerText = shopSettings.rules;
             document.getElementById('setRulesText').value = shopSettings.rules;
+            document.getElementById('rulesImgUrlInput').value = shopSettings.rulesImgUrl || '';
 
             const rulesContainer = document.getElementById('rulesImgContainer');
             const rulesImg = document.getElementById('rulesImgDisplay');
